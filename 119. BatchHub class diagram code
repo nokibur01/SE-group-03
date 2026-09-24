@@ -1,0 +1,187 @@
+
+classDiagram
+
+    %% =========================
+    %% USER & ACCESS MANAGEMENT
+    %% =========================
+
+    class User {
+        +int userId
+        +string name
+        +string email
+        +string studentId
+        +string batch
+        +string department
+        +string password
+        +string profilePicture
+        +string contactInformation
+        +string role
+        +register()
+        +login()
+        +logout()
+        +viewProfile()
+        +updateProfile()
+    }
+
+    class Permission {
+        +int permissionId
+        +string permissionName
+        +string description
+    }
+
+    User "1" --> "*" Permission : has
+
+
+    %% =========================
+    %% COURSE MANAGEMENT
+    %% =========================
+
+    class Course {
+        +int courseId
+        +string courseCode
+        +string courseTitle
+        +string description
+        +string department
+        +string batch
+        +createCourse()
+        +viewCourse()
+        +updateCourse()
+        +deleteCourse()
+    }
+
+    User "1" --> "*" Course : manages
+    User "*" --> "*" Course : accesses
+
+
+    %% =========================
+    %% NOTICE MANAGEMENT
+    %% =========================
+
+    class Notice {
+        +int noticeId
+        +string title
+        +string description
+        +string category
+        +date publicationDate
+        +string targetAudience
+        +createNotice()
+        +viewNotice()
+        +updateNotice()
+        +deleteNotice()
+    }
+
+    Course "1" --> "*" Notice : contains
+    User "1" --> "*" Notice : publishes
+
+
+    %% =========================
+    %% COURSE MATERIAL MANAGEMENT
+    %% =========================
+
+    class CourseMaterial {
+        +int materialId
+        +string title
+        +string category
+        +string fileUrl
+        +string fileType
+        +date uploadDate
+        +uploadMaterial()
+        +viewMaterial()
+        +downloadMaterial()
+        +updateMaterial()
+        +deleteMaterial()
+    }
+
+    Course "1" --> "*" CourseMaterial : contains
+    User "1" --> "*" CourseMaterial : uploads
+
+
+    %% =========================
+    %% PROJECT MANAGEMENT
+    %% =========================
+
+    class Project {
+        +int projectId
+        +string projectTitle
+        +string description
+        +string academicContext
+        +date createdAt
+        +date updatedAt
+        +createProject()
+        +viewProject()
+        +updateProject()
+        +deleteProject()
+    }
+
+    User "1" --> "*" Project : creates
+    Course "0..1" --> "*" Project : relates to
+
+
+    %% =========================
+    %% PROJECT GROUP MANAGEMENT
+    %% =========================
+
+    class ProjectGroup {
+        +int groupId
+        +string groupName
+        +string membershipRules
+        +date createdAt
+        +createGroup()
+        +joinGroup()
+        +addMember()
+        +removeMember()
+        +viewMembers()
+    }
+
+    class GroupMembership {
+        +int membershipId
+        +date joinedAt
+        +string memberRole
+        +string status
+    }
+
+    Project "1" --> "*" ProjectGroup : has
+    User "1" --> "*" GroupMembership : has
+    ProjectGroup "1" --> "*" GroupMembership : contains
+
+
+    %% =========================
+    %% NOTIFICATION MANAGEMENT
+    %% =========================
+
+    class Notification {
+        +int notificationId
+        +string message
+        +string type
+        +boolean isRead
+        +date createdAt
+        +markAsRead()
+        +viewNotification()
+    }
+
+    User "1" --> "*" Notification : receives
+
+
+    %% =========================
+    %% SEARCH & FILTERING
+    %% =========================
+
+    class Search {
+        +string keyword
+        +searchCourses()
+        +searchNotices()
+        +searchMaterials()
+        +searchProjects()
+    }
+
+    class Filter {
+        +string course
+        +string category
+        +string batch
+        +date date
+        +applyFilter()
+        +clearFilter()
+    }
+
+    User "1" --> "*" Search : performs
+    Search "1" --> "*" Filter : uses
